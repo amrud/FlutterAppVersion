@@ -22,8 +22,10 @@ jobs:
       - name: Install dependency
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Rebuild the dist/ directory
+        run: |
+          npm run build
+          npm run package
 
       - name: Run my action
         id: readversion

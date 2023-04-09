@@ -1,65 +1,21 @@
 import * as core from "@actions/core";
-
-let directory = core.getInput("directory");
-const token = core.getInput("token");
-
-const filename = "pubspec.yaml";
-if (!directory) {
-  directory = "";
-} else {
-  directory = directory + "/";
-}
-
-const path = `${directory}${filename}`;
+import { PubSpecHelper } from "./pubspec.helper";
 
 try {
-  //read from file pubspec.yaml and get the name of the project
-  //define fs
-  console.log(">> pubspec.yaml directory: " + path);
+  let pubspecHelper = new PubSpecHelper();
+  const versionModel = pubspecHelper.readPubSpec();
 
-  const fs = require("fs");
-  //check if pubspec.yaml exists
-  if (!fs.existsSync(path)) {
-    console.log(">> pubspec.yaml does not exist");
-  } else {
-    console.log(">> pubspec.yaml exist");
-    const pubspec = fs.readFileSync(path, "utf8");
-    const pubspecLines = pubspec.split("\n");
-    const projectName = pubspecLines[0].split(":")[1].trim();
-
-    //get the app version
-    const appDescription = pubspecLines[1].split(":")[1].trim();
-
-    //console log the project name
-    console.log("App name: " + projectName);
-    console.log("App Description:" + appDescription);
-
-    //get the version
-    //filter pubspeclines by starts with version
-    let versionLine = pubspecLines.find((line: string) =>
-      line.startsWith("version")
-    );
-
-    if (versionLine) {
-      console.log(versionLine);
-      versionLine = versionLine.replace("version:", "").trim();
-      //get build number
-      //get versionname
-      const versionName = versionLine.split("+")[0];
-      const buildNumber = versionLine.split("+")[1];
-
-      console.log("Version name: " + versionName);
-      console.log("Build number: " + buildNumber);
-
-      //output to github action
-      core.setOutput("project_name", projectName);
-      core.setOutput("app_description", appDescription);
-      core.setOutput("version_name", versionName);
-      core.setOutput("build_number", buildNumber);
-    } else {
-      console.log(">> version not found");
-    }
-  }
+  //console log the project name
+  console.log("app_name: " + versionModel.appName);
+  console.log("app_description:" + versionModel.appDescription);
+  console.log("current_version_name: " + versionModel.version);
+  console.log("current_build_number: " + versionModel.build);
+  //output to github action
+  core.setOutput("app_description", versionModel.appDescription);
+  core.setOutput("app_name", versionModel.appName);
+  core.setOutput("current_version_name", versionModel.version);
+  core.setOutput("current_build_number", versionModel.build);
 } catch (error) {
-  console.log(error);
+  console.error(error);
+  core.setFailed("Action failed with error");
 }
