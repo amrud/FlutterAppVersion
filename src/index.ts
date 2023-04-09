@@ -15,7 +15,11 @@ try {
   core.setOutput("app_name", versionModel.appName);
   core.setOutput("current_version_name", versionModel.version);
   core.setOutput("current_build_number", versionModel.build);
-} catch (error) {
-  console.error(error);
+} catch (error: any) {
   core.setFailed("Action failed with error");
+  core.summary
+    .addHeading("Action failed with error")
+    .addRaw("Error message: " + error.message)
+    .addEOL()
+    .write();
 }
