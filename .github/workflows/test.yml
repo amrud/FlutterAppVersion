@@ -26,4 +26,12 @@ jobs:
         run: npm run build
 
       - name: Run my action
+        id: readversion
         uses: ./
+      - name: Print version
+        run: |
+          echo ${{ steps.readversion.outputs.project_name }}
+          echo ${{ steps.readversion.outputs.app_description }}
+          echo ${{ steps.readversion.outputs.version_name }}
+          echo ${{ steps.readversion.outputs.build_number }}
+          echo ${{ steps.readversion.outputs }} >> $GITHUB_STEP_SUMMARY
