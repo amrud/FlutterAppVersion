@@ -1,14 +1,22 @@
 import * as core from "@actions/core";
 
-const directory = core.getInput("directory");
+let directory = core.getInput("directory");
 const token = core.getInput("token");
 
 const filename = "pubspec.yaml";
-const path = `${directory}/${filename}`;
+if (!directory) {
+  directory = "";
+} else {
+  directory = directory + "/";
+}
+
+const path = `${directory}${filename}`;
 
 try {
   //read from file pubspec.yaml and get the name of the project
   //define fs
+  console.log(">> pubspec.yaml directory: " + path);
+
   const fs = require("fs");
   //check if pubspec.yaml exists
   if (!fs.existsSync(path)) {
