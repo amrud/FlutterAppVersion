@@ -15,6 +15,15 @@ try {
   core.setOutput("app_name", versionModel.appName);
   core.setOutput("current_version_name", versionModel.version);
   core.setOutput("current_build_number", versionModel.build);
+
+  core.summary
+    .addHeading("Action completed successfully")
+    .addRaw("app_name: " + versionModel.appName)
+    .addRaw("app_description: " + versionModel.appDescription)
+    .addRaw("current_version_name: " + versionModel.version)
+    .addRaw("current_build_number: " + versionModel.build)
+    .addEOL()
+    .write();
 } catch (error: any) {
   core.setFailed("Action failed with error");
   core.summary
